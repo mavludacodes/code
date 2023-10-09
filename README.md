@@ -3,3 +3,4 @@
 3.  Intersection Observer API
 4.  [How to calculate margin, padding, height of child element in css](https://github.com/mavludacodes/code/tree/654f8fe1f37eb079bb158df26f9c42654b262b22/padding)
 5.  [Closure example](https://github.com/mavludacodes/code/blob/a7d614a29ed38337dbd79394d680fc0d82b6464f/closure/script.js)
+6.  Promise example
