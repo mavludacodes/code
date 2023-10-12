@@ -16,7 +16,37 @@ const removeActive = (page) => {
 
 let heightSizes = {};
 let topSizes = {};
+
+let added = [];
+
 let callback = (entries, observer) => {
+  entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+      added.push(entry.target.id);
+      added.map((el) => {
+        if (el === "section-1") {
+          let page = document.querySelector("#page1");
+          setActive(page);
+        } else if (el === "section-2") {
+          let page = document.querySelector("#page2");
+          setActive(page);
+        } else if (el === "section-3") {
+          let page = document.querySelector("#page3");
+          setActive(page);
+        } else {
+          let page1 = document.querySelector("#page1");
+          let page2 = document.querySelector("#page2");
+          let page3 = document.querySelector("#page3");
+          removeActive(page1);
+          removeActive(page2);
+          removeActive(page3);
+        }
+      });
+    }
+  });
+};
+
+let callback1 = (entries, observer) => {
   entries.forEach((entry, index) => {
     let rect = entry.target.getBoundingClientRect();
     heightSizes = { ...heightSizes, [entry.target.id]: rect.height };
