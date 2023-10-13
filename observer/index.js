@@ -1,83 +1,31 @@
+document.querySelector(".active").classList.add("border-[#007FFF]");
+document.querySelector(".active").classList.add("text-[#007FFF]");
+
 let options = {
   root: null,
   rootMargin: "0px",
-  threshold: 0.008,
+  threshold: 0.99,
 };
 
 const setActive = (page) => {
+  page.classList.add("active");
   page.classList.add("border-[#007FFF]");
   page.classList.add("text-[#007FFF]");
 };
-
-const removeActive = (page) => {
-  page.classList.remove("border-[#007FFF]");
-  page.classList.remove("text-[#007FFF]");
+const removeActive = () => {
+  document.querySelector(".active").classList.remove("border-[#007FFF]");
+  document.querySelector(".active").classList.remove("text-[#007FFF]");
+  document.querySelector(".active").classList.remove("active");
 };
 
-let heightSizes = {};
-let topSizes = {};
-
-let added = [];
-
-let callback = (entries, observer) => {
-  entries.forEach((entry, index) => {
-    if (entry.isIntersecting) {
-      added.push(entry.target.id);
-      added.map((el) => {
-        if (el === "section-1") {
-          let page = document.querySelector("#page1");
-          setActive(page);
-        } else if (el === "section-2") {
-          let page = document.querySelector("#page2");
-          setActive(page);
-        } else if (el === "section-3") {
-          let page = document.querySelector("#page3");
-          setActive(page);
-        } else {
-          let page1 = document.querySelector("#page1");
-          let page2 = document.querySelector("#page2");
-          let page3 = document.querySelector("#page3");
-          removeActive(page1);
-          removeActive(page2);
-          removeActive(page3);
-        }
-      });
-    }
-  });
-};
-
-let callback1 = (entries, observer) => {
-  entries.forEach((entry, index) => {
-    let rect = entry.target.getBoundingClientRect();
-    heightSizes = { ...heightSizes, [entry.target.id]: rect.height };
-    topSizes = { ...topSizes, [entry.target.id]: rect.top };
-    console.log(heightSizes, "sss");
-    console.log(topSizes, "sss");
+const callback = (entries, observer) => {
+  entries.forEach((entry) => {
     console.log(entry);
-    if (entry.target === allSections[0]) {
-      if (entry.isIntersecting && rect.top < rect.height) {
-        let page = document.querySelector("#page1");
-        setActive(page);
-      } else {
-        let page = document.querySelector("#page1");
-        removeActive(page);
-      }
-    } else if (entry.target === allSections[1]) {
-      if (entry.isIntersecting) {
-        let page = document.querySelector("#page2");
-        setActive(page);
-      } else {
-        let page = document.querySelector("#page2");
-        removeActive(page);
-      }
-    } else if (entry.target === allSections[2]) {
-      if (entry.isIntersecting) {
-        let page = document.querySelector("#page3");
-        setActive(page);
-      } else {
-        let page = document.querySelector("#page3");
-        removeActive(page);
-      }
+    // verify the element is intersecting
+    if (entry.isIntersecting && entry.intersectionRatio > 0.99) {
+      removeActive();
+      let page = document.querySelector(`#page${entry.target.id.substring(8)}`);
+      setActive(page);
     }
   });
 };
@@ -87,15 +35,3 @@ let allSections = document.querySelectorAll("section");
 allSections.forEach((target) => {
   observer.observe(target);
 });
-
-// let allSections = document.querySelectorAll("section");
-// allSections.forEach((target) => {
-//   observer.observe(target);
-// });
-
-// let target1 = document.querySelector("#section-1");
-// let target2 = document.querySelector("#section-2");
-// let target3 = document.querySelector("#section-3");
-// observer.observe(target1);
-// observer.observe(target2);
-// observer.observe(target3);
