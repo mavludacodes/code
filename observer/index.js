@@ -4,7 +4,7 @@ document.querySelector(".active").classList.add("text-[#007FFF]");
 let options = {
   root: null,
   rootMargin: "0px",
-  threshold: 0.99,
+  threshold: 0.9, // visible part in viewport
 };
 
 const setActive = (page) => {
@@ -20,9 +20,7 @@ const removeActive = () => {
 
 const callback = (entries, observer) => {
   entries.forEach((entry) => {
-    console.log(entry);
-    // verify the element is intersecting
-    if (entry.isIntersecting && entry.intersectionRatio > 0.99) {
+    if (entry.isIntersecting && entry.intersectionRatio >= 0.9) {
       removeActive();
       let page = document.querySelector(`#page${entry.target.id.substring(8)}`);
       setActive(page);
