@@ -1,0 +1,35 @@
+.common {
+  font-size: 30px;
+  color: white;
+}
+
+.first {
+  background-color: green;
+}
+
+.second {
+  background-color: red;
+  position: relative;
+  top: 10px;
+}
+
+.third {
+  background-color: blue;
+}
+
+.parent {
+  position: relative;
+}
+
+.child-1 {
+  background-color: green;
+}
+.child-2 {
+  background-color: red;
+  position: absolute;
+  top: 5px;
+}
+.child-3 {
+  background-color: blue;
+  height: 50px;
+}
