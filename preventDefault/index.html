@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why preventDefault?</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.7.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      /* Actually, if you watch closely, you'll see that it does log but then we get a
+         full page refresh. We can prove that by turning on preserve log. We say Joe
+         again, hit submit, we get submitted and then navigated to that page. 
+         
+         Now, the reason that this is happening is because when you submit a form 
+         in the browser, it automatically makes a post request to the current URL with 
+         the form data. We could see that if we looked at our network tab. 
+         
+         If you want to do some JavaScript stuff based on the user's submitted form, 
+         then we don't want the full page refresh. Instead, we can do our own JavaScript stuff. 
+         
+         The handleSubmit function as an event handler will accept an event as the argument. 
+         Then we can say event.preventDefault. With that, we will no longer get a full 
+         page refresh and we'll still get the submitted string logged to the console. 
+      */
+      function UsernameForm() {
+        function handleSubmit(event) {
+          event.preventDefault();
+          console.log("submitted");
+        }
+
+        return (
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="usernameInput">Username:</label>
+              <input id="usernameInput" type="text" />
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+        );
+      }
+
+      ReactDOM.render(<UsernameForm />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
