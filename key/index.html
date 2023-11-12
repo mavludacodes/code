@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Each child in a list should have a unique "key" prop.</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+    <script type="text/babel">
+      const allItems = [
+        { id: "a", value: "apple" },
+        { id: "o", value: "orange" },
+        { id: "g", value: "grape" },
+        { id: "p", value: "pear" },
+      ];
+
+      function App() {
+        const [items, setItems] = React.useState(allItems);
+
+        function addItem() {
+          setItems([...items, allItems.find((i) => !items.includes(i))]);
+        }
+
+        function removeItem(item) {
+          setItems(items.filter((i) => i !== item));
+        }
+
+        return (
+          <div>
+            <button
+              disabled={items.length >= allItems.length}
+              onClick={addItem}
+            >
+              add item
+            </button>
+            <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+              {items.map((item) => (
+                <li>
+                  <button onClick={() => removeItem(item)}>remove</button>{" "}
+                  <label htmlFor={`${item.value}-input`}>{item.value}</label>{" "}
+                  <input id={`${item.value}-input`} defaultValue={item.value} />
+                </li>
+              ))}
+            </ul>
+
+            <p>
+              Here, we have a list of each one of these items, where the item
+              itself is the label and then the default value for the input is
+              the item as well. Then we can remove these and add them. As I
+              removed them, if you watched carefully, you might have noticed an
+              interesting bug.
+            </p>
+            <p>
+              If I click on remove here and remove and remove and remove,
+              everything works out just fine. If I remove from the beginning,
+              now we're having orange being associated to the apple. Grape is
+              associated to orange. Pear is associated to grape. That's
+              interesting.
+            </p>
+
+            <p>
+              If I remove from the middle here, now we have pear is associated
+              to orange. Orange is associated to apple. Things are all kinds of
+              messed up. This is the bug that the key prop helps you to avoid.
+            </p>
+
+            <p>
+              If you consider what happens when we click this remove button or
+              this add button, then this strange behavior will make sense. When
+              we click on removeItem, for example, if we try to remove the
+              grape, then that goes into this code right here, which calls
+              setItems. That sets the items to the same list of items that we
+              had before, except we're filtering out the item that you were
+              trying to remove.
+            </p>
+
+            <p>
+              This call to setItems is going to trigger a re-render of our app.
+              The app is going to come down here. We're going to create these
+              React elements. We're going to iterate over this list of items,
+              which now has one less item than it had before. We're going to
+              hand that off to React so that it can update the DOM
+              appropriately.
+            </p>
+            <p>
+              The way React updates the DOM is it has a reference to the JSX
+              elements that you gave it the last time it rendered this app
+              component. It compares those React elements with the new React
+              elements that you just returned at this time. Then it updates the
+              DOM accordingly.
+            </p>
+
+            <p>
+              When you're giving it an array of React elements, unless React has
+              some sort of identifier to know which element is which, it doesn't
+              know whether you removed an element or maybe you added three and
+              removed four or maybe you changed the order and just removed the
+              first one.
+            </p>
+
+            <p>
+              It doesn't have any insight into what it is that you did to this
+              array of React elements between the last time it rendered and this
+              time. Any time you're rendering an array of React elements, you
+              need to give it a key so that it can determine whether elements
+              were removed, added, or modified.
+            </p>
+
+            <p>
+              That's why providing a unique key for each one of these items is
+              going to fix this problem. Now, if we click remove on the grape,
+              all of the inputs and their labels are correct.
+            </p>
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

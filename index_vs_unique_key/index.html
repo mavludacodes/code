@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>index key vs unique key</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+
+    <script type="text/babel">
+      function FocusDemo() {
+        const [items, setItems] = React.useState([
+          { id: "a", value: "apple" },
+          { id: "o", value: "orange" },
+          { id: "g", value: "grape" },
+          { id: "p", value: "pear" },
+        ]);
+
+        React.useEffect(() => {
+          const interval = setInterval(() => {
+            setItems(shuffle(items));
+          }, 1000);
+          return () => clearInterval(interval);
+        }, []);
+
+        return (
+          <div>
+            <div>
+              <h1>Without Key</h1>
+              {items.map((item) => (
+                <input value={item.value} />
+              ))}
+            </div>
+            <div>
+              <h1>With Key as Index</h1>
+              {items.map((item, index) => (
+                <input key={index} value={item.value} />
+              ))}
+            </div>
+            <div>
+              <h1>With Key</h1>
+              {items.map((item) => (
+                <input key={item.id} value={item.value} />
+              ))}
+            </div>
+
+            <p>
+              Another mistake that I see people make sometimes is they try to
+              use the index as the key. While you get rid of the warning, you do
+              not get rid of the bugs. That's because as React is comparing the
+              previous version with the new version, what you're saying is the
+              element that was at index four is actually now at index three, but
+              React doesn't know that.
+            </p>
+            <p>
+              It maintains the state for this input to be the same as the one
+              that was at index three the last time rather than being the one
+              that was in index four last time. It's important that you keep the
+              key as something that's unique to the item that this element in
+              the array is representing.
+            </p>
+            <p>
+              Here's another little demo that I have at the bottom of this file.
+              I'm just going to uncomment that. We'll save this. We'll get a
+              refresh. In this example, we have those items. Every 1,000
+              milliseconds, we have this interval that shuffles those items and
+              triggers a re-render with that shuffled version of the items. We
+              randomize the items every time.
+            </p>
+            <p>
+              We have three versions of this, one that renders those items as
+              inputs without a key, another that renders those items with inputs
+              with the key of index, and then the last that renders those items
+              with an appropriate key. You'll notice that they're all updating
+              correctly, meaning that they're all jumping around the screen as
+              they should, but the focus is not updating correctly.
+            </p>
+            <p>
+              I'm focused on apple right now. When that one moves, my focus
+              doesn't go around with apple. Also, if I try to highlight one of
+              these, then my highlight goes away as well. You'll notice that the
+              With Key as Index suffers from the exact same problem. Even though
+              it's not getting the warning in the console, you're still not
+              fixing this bug.
+            </p>
+            <p>
+              Only when you have a key in there will your focus travel around
+              with the input that it's associated with, because React is able to
+              determine where to move the focus as your component updates.
+            </p>
+          </div>
+        );
+      }
+
+      function shuffle(originalArray) {
+        const array = [...originalArray];
+        let currentIndex = array.length;
+        let temporaryValue;
+        let randomIndex;
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+        return array;
+      }
+
+      ReactDOM.render(<FocusDemo />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
