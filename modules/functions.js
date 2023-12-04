@@ -3,5 +3,5 @@ export function pow(a, b) {
 }
 
 export function print(value) {
-  console.log(value);
+  console.log("Module Result: ", value);
 }
